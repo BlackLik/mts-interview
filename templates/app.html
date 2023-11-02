@@ -1,0 +1,57 @@
+{% extends 'wrapper.html' %}
+{% load app_tags %}
+
+
+{%block title%}МТС собеседование{%endblock%}
+
+{% block content %}
+<h1>{{ model_name }}</h1>
+
+<form>
+  <select name="model" onchange="this.form.submit()">
+    <option value="ModelA"{% if model_name == 'ModelA' %} selected{% endif %}>ModelA</option>
+    <option value="ModelB"{% if model_name == 'ModelB' %} selected{% endif %}>ModelB</option>
+    <option value="ModelC"{% if model_name == 'ModelC' %} selected{% endif %}>ModelC</option>
+  </select>
+</form>
+
+<table class="table">
+  <thead>
+    <tr>
+      {% for column in columns %}
+        <th>{{ column }}</th>
+      {% endfor %}
+    </tr>
+  </thead>
+  
+  <tbody>
+    {% if rows %}
+    {% for row in rows %}
+      <tr>
+        {% for column in columns %}
+          <td>{{ row|get_attribute:column }}</td>
+        {% endfor %}
+      </tr>
+    {% endfor %}
+    {% else %}
+      <tr>
+        <td colspan="3">No rows</td>
+      </tr>
+    {% endif %}
+</tbody>
+</table>
+
+<form method="post" action="{% url 'app' %}">
+  {% csrf_token %}
+  
+  {% for column in columns %}
+    <div class="form-group my-4">
+        <input name="{{ column }}" class="form-control" placeholder=" field {{ column }}">
+    </div>
+    {% endfor %}
+
+  <input type="hidden" name="model" value="{{ model_name }}">
+
+  <button type="submit" class="btn btn-success">Add Row</button>
+</form>
+{% endblock %}
